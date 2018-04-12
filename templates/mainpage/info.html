@@ -1,0 +1,33 @@
+<!--info.html-->
+{% extends 'base.html' %}
+{% block title %}
+    欢迎光临-志在远方
+{% endblock %}
+{% block headmessage %}
+
+{% endblock %}
+{% block content %}
+    <div class="panel panel-default">
+        <div class="panel-heading">个人信息</div>
+        <table class="table">
+            <th>名称</th>
+            <th>信息</th>
+            <tr>
+                <td>用户名</td>
+                <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+                <td>邮箱</td>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <td>账户创建日期</td>
+                <td>{{ user.date_joined }}</td>
+            </tr>
+            <tr>
+                <td>上次登录日期</td>
+                <td>{{ user.last_login }}</td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}

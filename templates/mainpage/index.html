@@ -1,0 +1,240 @@
+<!--index.html-->
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}
+    一站式工作规划平台
+{% endblock %}
+{% block headmessage %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title" style="font-family: 微软雅黑,serif;">本站工作类型列表</h3>
+        </div>
+        <div class="panel-body">
+            Pursue what you want to get！Just do it!
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <form class="form-inline" role="form" method="get" action='/job/search/'>
+                <div class="form-group">
+                    <label for="id_job_type">类型</label>
+                    <select id="id_job_type" name="JobDec" class="form-control">
+                        <option value="所有">所有</option>
+                        <option value="后端开发">后端开发</option>
+                        <option value="前端开发">前端开发</option>
+                        <option value="人工智能">人工智能</option>
+                        <option value="测试">测试</option>
+                        <option value="运维">运维</option>
+                        <option value="DBA">DBA</option>
+                        <option value="高端职位">高端职位</option>
+                        <option value="项目管理">项目管理</option>
+                        <option value="硬件开发">硬件开发</option>
+                        <option value="企业软件">企业软件</option>
+                        <option value="产品经理">产品经理</option>
+                        <option value="产品设计师">产品设计师</option>
+                        <option value="视觉设计">视觉设计</option>
+                        <option value="交互设计">交互设计</option>
+                        <option value="用户研究">用户研究</option>
+                        <option value="运营">运营</option>
+                        <option value="编辑">编辑</option>
+                        <option value="客服">客服</option>
+                        <option value="市场营销">市场营销</option>
+                        <option value="公关">公关</option>
+                        <option value="销售">销售</option>
+                        <option value="供应链">供应链</option>
+                        <option value="采购">采购</option>
+                        <option value="投资">投资</option>
+                        <option value="人力资源">人力资源</option>
+                        <option value="行政">行政</option>
+                        <option value="财务">财务</option>
+                        <option value="法务">法务</option>
+                        <option value="投融资">投融资</option>
+                        <option value="风控">风控</option>
+                        <option value="审计税务">审计税务</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="id_job_name">名称</label>
+                    <input id="id_job_name" maxlength="30" name="JobName" type="text" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-default">search</button>
+            </form>
+        </div>
+        <div class="panel-body">
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active"><a href="#job" data-toggle="tab">工作列表</a></li>
+                <li><a href="#data" data-toggle="tab">数据分析</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade" id="data">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div id="main" style="width: 1080px;height:640px;"></div>
+                            <script type="text/javascript">
+                                var myChart = echarts.init(document.getElementById('main'));
+                                var data = [
+                                    [{% for job in jobs_tech %}
+                                        [{{ job.salaryMean|floatformat }}, {{ job.salaryVar|floatformat }}, {{ job.workYearMean|floatformat }}, '{{ job.job_name }}', 1990]
+                                        {% if not forloop.last %}, {% endif %}{% endfor %}],
+                                    [{% for job in jobs_untech %}
+                                        [{{ job.salaryMean|floatformat }}, {{ job.salaryVar|floatformat }}, {{ job.workYearMean|floatformat }}, '{{ job.job_name }}', 2015]
+                                        {% if not forloop.last %}, {% endif %}{% endfor %}]
+                                ];
+                                {#注意：以上数据在使用时必须进行四舍五入的小数转换#}
+                                var schema = [
+                                    {name: '薪资均值', index: 0, text: '薪资均值'},
+                                    {name: '薪资方差', index: 1, text: '薪资方差'},
+                                    {name: '工作经验', index: 2, text: '工作经验'}
+                                ];
+                                option = {
+                                    backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+                                        offset: 0,
+                                        color: '#f7f8fa'
+                                    }, {
+                                        offset: 1,
+                                        color: '#cdd0d5'
+                                    }]),
+                                    title: {
+                                        text: '各工作类型薪资、工作经验分析',
+                                        subtext: '来自-互联网',
+                                        x: 'center'
+                                    },
+                                    tooltip: {
+                                        padding: 10,
+                                        backgroundColor: '#222',
+                                        borderColor: '#777',
+                                        borderWidth: 1,
+                                        formatter: function (obj) {
+                                            var value = obj.value;
+                                            return obj.seriesName + ' ' + value[3] + '<br>'
+                                                + schema[0].text + '：' + value[0] + '<br>'
+                                                + schema[1].text + '：' + value[1] + '<br>'
+                                                + schema[2].text + '：' + value[2] + '<br>'
+                                        }
+                                    },
+                                    legend: {
+                                        right: 10,
+                                        data: ['技术类', '非技术类']
+                                    },
+                                    xAxis: {
+                                        name: '薪资均值（k/月）',
+                                        splitLine: {
+                                            lineStyle: {
+                                                type: 'dashed'
+                                            }
+                                        }
+                                    },
+                                    yAxis: {
+                                        name: '薪资方差',
+                                        splitLine: {
+                                            lineStyle: {
+                                                type: 'dashed'
+                                            }
+                                        },
+                                        scale: true
+                                    },
+                                    series: [{
+                                        name: '技术类',
+                                        data: data[0],
+                                        type: 'scatter',
+                                        symbolSize: function (data) {
+                                            return Math.pow(data[2] + 2, 3) / 5;
+                                        },
+                                        label: {
+                                            emphasis: {
+                                                show: true,
+                                                formatter: function (param) {
+                                                    return param.data[3];
+                                                },
+                                                position: 'top'
+                                            }
+                                        },
+                                        itemStyle: {
+                                            normal: {
+                                                shadowBlur: 10,
+                                                shadowColor: 'rgba(120, 36, 50, 0.5)',
+                                                shadowOffsetY: 5,
+                                                color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [{
+                                                    offset: 0,
+                                                    color: 'rgb(251, 118, 123)'
+                                                }, {
+                                                    offset: 1,
+                                                    color: 'rgb(204, 46, 72)'
+                                                }])
+                                            }
+                                        }
+                                    }, {
+                                        name: '非技术类',
+                                        data: data[1],
+                                        type: 'scatter',
+                                        symbolSize: function (data) {
+                                            return Math.pow(data[2] + 2, 3) / 5;
+                                        },
+                                        label: {
+                                            emphasis: {
+                                                show: true,
+                                                formatter: function (param) {
+                                                    return param.data[3];
+                                                },
+                                                position: 'top'
+                                            }
+                                        },
+                                        itemStyle: {
+                                            normal: {
+                                                shadowBlur: 10,
+                                                shadowColor: 'rgba(25, 100, 150, 0.5)',
+                                                shadowOffsetY: 5,
+                                                color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [{
+                                                    offset: 0,
+                                                    color: 'rgb(129, 227, 238)'
+                                                }, {
+                                                    offset: 1,
+                                                    color: 'rgb(25, 183, 207)'
+                                                }])
+                                            }
+                                        }
+                                    }]
+                                };
+                                // 使用刚指定的配置项和数据显示图表。
+                                myChart.setOption(option);
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade in active" id="job">
+                    <div class="table-responsive">
+                        {% load pagination_tags %}
+                        {% autopaginate jobs %}
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>类型</th>
+                                <th>工作类型</th>
+                                <th>找工作链接</th>
+                            </tr>
+                            </thead>
+                            {% for job in jobs %}
+                                <tbody>
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ job.job_dec }}</td>
+                                    <td><a href="/job_detail/{{ job.job_name }}">{{ job.job_name }}</a></td>
+                                    <td><a href="{{ job.job_url }}" target="_blank">拉勾网</a></td>
+                                </tr>
+                                </tbody>
+                            {% endfor %}
+                        </table>
+                        {% paginate %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

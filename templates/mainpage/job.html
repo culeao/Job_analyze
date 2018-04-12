@@ -1,0 +1,16 @@
+<!--job.html-->
+{% extends 'base.html' %}
+{% block title %}
+    欢迎光临-志在远方
+{% endblock %}
+{% block headmessage %}
+    <h3 style="font-family: 微软雅黑;">找工作</h3>
+{% endblock %}
+{% block content %}
+    <h1>{{ job.job_name }}</h1>
+    <hr>
+        <p style='font-family: 微软雅黑;font-size: 14px;letter-spacing: 1pt;'>
+        {{ job.job_url }}
+        </p>
+    <hr>
+{% endblock %}

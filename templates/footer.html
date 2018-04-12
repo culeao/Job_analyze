@@ -1,0 +1,12 @@
+<!--footer.html-->
+{% block footer %}
+    {% if nowtime %}
+        <p style="font-family: 微软雅黑;text-align: center">现在时刻：{{ nowtime }}</p>
+        <p style="font-family: 微软雅黑;text-align: center">作者：巩力铜</p>
+        <p style="font-family: 微软雅黑;text-align: center">邮箱：litonggong@gmail.com</p>
+    {% else %}
+        <p style="font-family: 微软雅黑;text-align: center">本内容取自网络，如有侵权请来信通知下架...</p>
+        <p style="font-family: 微软雅黑;text-align: center">作者：巩力铜</p>
+        <p style="font-family: 微软雅黑;text-align: center">邮箱：litonggong@gmail.com</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,529 @@
+<!--job_detail.html-->
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}
+    工作详情
+{% endblock %}
+{% block headmessage %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">工作详情-{{ job_name }}</h3>
+        </div>
+        <div class="panel-body">
+            {{ job_second_label }}-{{ job_first_label }}
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <form class="form-inline" role="form" method="get" action='/job_detail/{{ job_name }}/search/'>
+                <div class="form-group">
+                    <label for="id_job_name">标签</label>
+                    <input id="id_job_name" maxlength="30" name="positionLabel" type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="id_job_name">地点</label>
+                    <input id="id_job_name" maxlength="30" name="district" type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="id_job_type">薪金</label>
+                    <select id="id_job_type" name="salary" class="form-control">
+                        <option value="所有">所有</option>
+                        <option value="40k以上">40k以上</option>
+                        <option value="35k-40k">35k-40k</option>
+                        <option value="30k-35k">30k-35k</option>
+                        <option value="25k-30k">25k-30k</option>
+                        <option value="20k-25k">20k-25k</option>
+                        <option value="15k-20k">15k-20k</option>
+                        <option value="10k-15k">10k-15k</option>
+                        <option value="5k-10k">5k-10k</option>
+                        <option value="5k以下">5k以下</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="id_job_name">学历</label>
+                    <select id="id_job_type" name="education" class="form-control">
+                        <option value="所有">所有</option>
+                        <option value="大专">大专</option>
+                        <option value="本科">本科</option>
+                        <option value="硕士">硕士</option>
+                        <option value="博士">博士</option>
+                        <option value="不限">不限</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-default">search</button>
+            </form>
+        </div>
+        <div class="panel-body">
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active"><a href="#job" data-toggle="tab">工作详情</a></li>
+                <li><a href="#data" data-toggle="tab">数据分析</a></li>
+                <li><a href="#learn" data-toggle="tab">学习乐园</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade" id="data">
+                    {#                    <div class="row">#}
+                    {#                        <div class="col-md-7 col-md-offset-2">#}
+                    {#                            <h2>{{ job_name }}关键词热点图</h2>#}
+                    {#                            <p> .img-responsive类让图片支持响应式，将很好地扩展到父元素 (通过改变窗口大小查看效果):</p>#}
+                    {#                            <img src="{% static keyWord %}" class="img-responsive" alt="关键词提取，图片未能正确加载"#}
+                    {#                                 width="auto"#}
+                    {#                                 height="auto">#}
+                    {#                        </div>#}
+                    {#                    </div>#}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="main" style="width: 1080px;height:560px;"></div>
+                            <script type="text/javascript">
+                                // 基于准备好的dom，初始化echarts实例
+                                var myChart = echarts.init(document.getElementById('main'));
+                                option = {
+                                    title: {
+                                        text: '{{ job_name }}热点分析',
+                                        link: 'https://www.baidu.com/s?wd=' + encodeURIComponent('ECharts'),
+                                        x: 'center',
+                                        textStyle: {
+                                            fontSize: 24
+                                        }
+
+                                    },
+                                    backgroundColor: '#F7F7F7',
+                                    tooltip: {
+                                        show: true
+                                    },
+                                    toolbox: {
+                                        feature: {
+                                            saveAsImage: {
+                                                iconStyle: {
+                                                    normal: {
+                                                        color: '#FFFFFF'
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    series: [{
+                                        name: '{{ job_name }}热点分析',
+                                        type: 'wordCloud',
+                                        //size: ['9%', '99%'],
+                                        sizeRange: [15, 75],
+                                        //textRotation: [0, 45, 90, -45],
+                                        rotationRange: [-45, 90],
+                                        //shape: 'circle',
+                                        textPadding: 0,
+                                        autoSize: {
+                                            enable: true,
+                                            minSize: 6
+                                        },
+                                        textStyle: {
+                                            normal: {
+                                                color: function () {
+                                                    return 'rgb(' + [
+                                                        Math.round(Math.random() * 160),
+                                                        Math.round(Math.random() * 160),
+                                                        Math.round(Math.random() * 160)
+                                                    ].join(',') + ')';
+                                                }
+                                            },
+                                            emphasis: {
+                                                shadowBlur: 10,
+                                                shadowColor: '#333'
+                                            }
+                                        },
+                                        data: [{
+                                            name: "Jayfee",
+                                            value: 666
+                                        }, {
+                                            name: "Nancy",
+                                            value: 520
+                                        }]
+                                    }]
+                                };
+
+                                var JosnList = [];
+
+                                JosnList.push(
+                                    {% for key,item_data in keyWordCloud.items %}
+                                    {
+                                        name: '{{ key }}',
+                                        value:{{ item_data }}
+                                    }
+                                    {% if not forloop.last %}, {% endif %}{% endfor %}
+                                );
+
+                                option.series[0].data = JosnList;
+
+
+                                //myChart.setOption(option);
+                                myChart.on('click', function (params) {
+                                    //alert((params.name));
+                                    window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+
+                                });
+                                // 使用刚指定的配置项和数据显示图表。
+                                myChart.setOption(option);
+                            </script>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="main1" style="width: 1080px;height:560px;"></div>
+                            <script type="text/javascript">
+                                // 基于准备好的dom，初始化echarts实例
+                                var myChart = echarts.init(document.getElementById('main1'));
+                                option = {
+                                    title: {
+                                        text: '{{ job_name }}工作薪金与工作经验关系图',
+                                        subtext: '来自-互联网',
+                                        x: 'center'
+                                    },
+                                    tooltip: {
+                                        formatter: '（工作薪金,工作经验）: ({c})',
+                                        axisPointer: {
+                                            type: 'cross'
+                                        }
+                                    },
+                                    toolbox: {
+                                        show: true,
+                                        feature: {
+                                            mark: {show: true},
+                                            dataZoom: {show: true},
+                                            dataView: {show: true, readOnly: false},
+                                            restore: {show: true},
+                                            saveAsImage: {show: true}
+                                        }
+                                    },
+                                    dataRange: {
+                                        min: 0,
+                                        max: 10,
+                                        y: 'center',
+                                        text: ['高', '低'],           // 文本，默认为数值文本
+                                        color: ['yellow', 'blue'],
+                                        calculable: true
+                                    },
+                                    xAxis: [
+                                        {
+                                            name: '薪资（k/月）',
+                                            type: 'value',
+                                            scale: true
+                                        }
+                                    ],
+                                    yAxis: [
+                                        {
+                                            name: '工作经验（年）',
+                                            type: 'value',
+                                            position: 'left',
+                                            scale: true
+                                        }
+                                    ],
+                                    animation: false,
+                                    series: [
+                                        {
+                                            name: '工作经验（年）',
+                                            type: 'effectScatter',
+                                            symbolSize: 20,
+                                            data: [
+                                                {% for job in job_detail %}
+                                                [{{ job.salaryOne|floatformat }}, {{ job.workYearAvr|floatformat }}]
+                                                {% if not forloop.last %}, {% endif %}{% endfor %}
+                                            ],
+                                        }
+                                    ]
+                                };
+                                // 使用刚指定的配置项和数据显示图表。
+                                myChart.setOption(option);
+                            </script>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="main2" style="width: 1080px;height:560px;"></div>
+                            <script type="text/javascript">
+                                // 基于准备好的dom，初始化echarts实例
+                                var myChart = echarts.init(document.getElementById('main2'));
+                                option = {
+                                    title: {
+                                        text: '{{ job_name }}工作薪金统计',
+                                        subtext: '来自-互联网',
+                                        x: 'center'
+                                    },
+                                    tooltip: {
+                                        trigger: 'item',
+                                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                                    },
+                                    legend: {
+                                        x: 'center',
+                                        y: 'bottom',
+                                        data: [{% for key,item_data in data.items %}'{{ key }}'{% if not forloop.last %}, {% endif %}{% endfor %}]
+                                    },
+                                    toolbox: {
+                                        show: true,
+                                        feature: {
+                                            mark: {show: true},
+                                            dataView: {show: true, readOnly: false},
+                                            magicType: {
+                                                show: true,
+                                                type: ['pie', 'funnel']
+                                            },
+                                            restore: {show: true},
+                                            saveAsImage: {show: true}
+                                        }
+                                    },
+                                    calculable: true,
+                                    series: [
+                                        {
+                                            name: '{{ job_name }}工作薪金',
+                                            type: 'pie',
+                                            radius: [30, 200],
+                                            center: ['50%', '50%'],
+                                            roseType: 'area',
+                                            data: [
+                                                    {% for key,item_data in data.items %}{
+                                                    value:{{item_data}},
+                                                    name: '{{key}}'
+                                                }{% if not forloop.last %}, {% endif %}{% endfor %}
+                                            ]
+                                        }
+                                    ]
+                                };
+                                // 使用刚指定的配置项和数据显示图表。
+                                myChart.setOption(option);
+                            </script>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="main3" style="width: 1080px;height:560px;"></div>
+                            <script type="text/javascript">
+                                // 基于准备好的dom，初始化echarts实例
+                                var myChart = echarts.init(document.getElementById('main3'));
+                                    option = {
+                                        title: {
+                                            text: '{{ job_name }}工作经验要求统计',
+                                            subtext: '来自-互联网',
+                                            x: 'center'
+                                        },
+                                        tooltip: {
+                                            trigger: 'item',
+                                            formatter: "{a} <br/>{b}: {c} ({d}%)"
+                                        },
+                                        legend: {
+                                            x: 'center',
+                                            y: 'bottom',
+                                            data: [{% for key,item_data in workYear.items %}'{{ key }}'{% if not forloop.last %}, {% endif %}{% endfor %}]
+                                        },
+                                        series: [
+
+                                            {
+                                                name: '{{ job_name }}工作经验（年）',
+                                                type: 'pie',
+                                                radius: ['50%', '70%'],
+                                                label: {
+                                                    normal: {
+                                                        formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
+                                                        backgroundColor: '#eee',
+                                                        borderColor: '#aaa',
+                                                        borderWidth: 1,
+                                                        borderRadius: 4,
+                                                        // shadowBlur:3,
+                                                        // shadowOffsetX: 2,
+                                                        // shadowOffsetY: 2,
+                                                        // shadowColor: '#999',
+                                                        // padding: [0, 7],
+                                                        rich: {
+                                                            a: {
+                                                                color: '#999',
+                                                                lineHeight: 22,
+                                                                align: 'center'
+                                                            },
+                                                            // abg: {
+                                                            //     backgroundColor: '#333',
+                                                            //     width: '100%',
+                                                            //     align: 'right',
+                                                            //     height: 22,
+                                                            //     borderRadius: [4, 4, 0, 0]
+                                                            // },
+                                                            hr: {
+                                                                borderColor: '#aaa',
+                                                                width: '100%',
+                                                                borderWidth: 0.5,
+                                                                height: 0
+                                                            },
+                                                            b: {
+                                                                fontSize: 16,
+                                                                lineHeight: 33
+                                                            },
+                                                            per: {
+                                                                color: '#eee',
+                                                                backgroundColor: '#334455',
+                                                                padding: [2, 4],
+                                                                borderRadius: 2
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                data: [
+                                                        {% for key,item_data in workYear.items %}{
+                                                        value:{{item_data}},
+                                                        name: '{{key}}'
+                                                    }{% if not forloop.last %}, {% endif %}{% endfor %}
+                                            ]
+                                        }
+                                    ]
+                                };
+                                // 使用刚指定的配置项和数据显示图表。
+                                myChart.setOption(option);
+                            </script>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="main5" style="width: 1080px;height:560px;"></div>
+                            <script type="text/javascript">
+                                // 基于准备好的dom，初始化echarts实例
+                                var myChart = echarts.init(document.getElementById('main5'));
+                                option = {
+                                    title: {
+                                        text: '{{ job_name }}学历要求统计',
+                                        subtext: '来自-互联网',
+                                        x: 'center'
+                                    },
+                                    tooltip: {
+                                        trigger: 'item',
+                                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                                    },
+                                    legend: {
+                                        x: 'center',
+                                        y: 'bottom',
+                                        data: [{% for key,item_data in education.items %}'{{ key }}'{% if not forloop.last %}, {% endif %}{% endfor %}]
+                                    },
+                                    toolbox: {
+                                        show: true,
+                                        feature: {
+                                            mark: {show: true},
+                                            dataView: {show: true, readOnly: false},
+                                            magicType: {
+                                                show: true,
+                                                type: ['pie', 'funnel']
+                                            },
+                                            restore: {show: true},
+                                            saveAsImage: {show: true}
+                                        }
+                                    },
+                                    calculable: true,
+                                    series: [
+                                        {
+                                            name: '{{ job_name }}学历要求',
+                                            type: 'pie',
+                                            radius: [30, 200],
+                                            center: ['50%', '50%'],
+                                            roseType: 'area',
+                                            data: [
+                                                    {% for key,item_data in education.items %}{
+                                                    value:{{item_data}},
+                                                    name: '{{key}}'
+                                                }{% if not forloop.last %}, {% endif %}{% endfor %}
+                                            ]
+                                        }
+                                    ]
+                                };
+                                // 使用刚指定的配置项和数据显示图表。
+                                myChart.setOption(option);
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade in active" id="job">
+                    <div class="table-responsive">
+                        {% load pagination_tags %}
+                        {% autopaginate job_detail %}
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>标签</th>
+                                <th>薪水</th>
+                                <th>地点</th>
+                                <th>学历</th>
+                                <th>经验</th>
+                                <th>发布时间</th>
+                                <th>详情链接</th>
+                                <th>职位描述</th>
+                            </tr>
+                            </thead>
+                            {% for job in job_detail %}
+                                <tbody>
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ job.positionLables|truncatechars:20 }}</td>
+                                    <td>{{ job.salary }}</td>
+                                    <td>{{ job.district }}</td>
+                                    <td>{{ job.education }}</td>
+                                    <td>{{ job.workYear }}</td>
+                                    <td>{{ job.createTime }}</td>
+                                    <td><a href="{{ job.detail_url }}" target="_blank">拉勾网</a></td>
+                                    <td>{{ job.positionDetail|truncatechars:20 }}</td>
+                                    {#                                    <td>#}
+                                    {#                                        <h4 class="panel-title">#}
+                                    {#                                            <script type="text/javascript">#}
+                                    {#                                                $(function () {#}
+                                    {#                                                    $('#{{ job.positionId }}').collapse('hide')#}
+                                    {#                                                });#}
+                                    {#                                            </script>#}
+                                    {#                                            <a data-toggle="collapse" data-parent="#accordion"#}
+                                    {#                                               href="#{{ job.positionId }}">#}
+                                    {#                                                {{ job.positionDetail|truncatechars:25 }}#}
+                                    {#                                            </a>#}
+                                    {##}
+                                    {#                                        </h4>#}
+                                    {#                                        <div id="{{ job.positionId }}" class="panel-collapse collapse in">#}
+                                    {#                                            <div class="panel-body">#}
+                                    {#                                                {{ job.positionDetail }}#}
+                                    {#                                            </div>#}
+                                    {#                                        </div>#}
+                                    {#                                    </td>#}
+                                </tr>
+
+                                </tbody>
+                            {% endfor %}
+                        </table>
+                        {% paginate %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="learn">
+                    <div class="table-responsive">
+                        {% load pagination_tags %}
+                        {% autopaginate learn %}
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>课程类型</th>
+                                <th>课程名称</th>
+                                <th>课程难度</th>
+                                <th>课程详情</th>
+                                <th>课程连接</th>
+                            </tr>
+                            </thead>
+                            {% for lea in learn %}
+                                <tbody>
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ lea.learnType }}</td>
+                                    <td>{{ lea.learnLabel }}</td>
+                                    <td>{{ lea.learnLevel }}</td>
+                                    <td>{{ lea.learnDetail|truncatechars:25 }}</td>
+                                    <td><a href="{{ lea.learnURL }}" target="_blank">{{ lea.webName }}</a></td>
+                                </tr>
+                                </tbody>
+                            {% endfor %}
+                        </table>
+                        {% paginate %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
