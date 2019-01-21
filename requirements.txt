@@ -5,7 +5,7 @@ chardet==3.0.4
 constantly==15.1.0
 cssselect==1.0.3
 cycler==0.10.0
-Django==1.9.1
+django>=1.11.18
 django-pagination-bootstrap==1.2.4
 hyperlink==17.3.1
 idna==2.6
